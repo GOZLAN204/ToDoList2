@@ -18,6 +18,7 @@ async function remove(id){
     return result.affectedRows;
 }
 
+
 module.exports ={
     getAll,
     getOne,
