@@ -2,13 +2,17 @@
   "name": "todo_list2",
   "version": "1.0.0",
   "main": "index.js",
- 
-  "scripts": { 
-    "start":"nodemon index.js",
+  "scripts": {
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "jsonwebtoken": "^9.0.2"
+  }
 }
