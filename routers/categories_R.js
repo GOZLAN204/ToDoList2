@@ -7,6 +7,6 @@ const {isLoggedIn} = require('../middelware/auth_MID');
 router.get('/',isLoggedIn,getAllCategories);
 // router.get('/:id',isValidId,getOneUser);
 // router.delete('/:id',isValidId,deleteUser);
-// router.patch('/:id',isValidId,valuesToEdit,updateUser);
+router.patch('/:id',isValidId,addCategory);
 
 module.exports = router;
