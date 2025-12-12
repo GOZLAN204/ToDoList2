@@ -1,18 +1,25 @@
 const db = require('../config/db_config');
 
 async function getAll(){
-    let sql = `SELECT name FROM categories`;
+    let sql = `SELECT * FROM categories`;
     let [rows] = await db.query(sql);    
     return rows;
 }
-async function add({id,CategoryName,users_id}){
-    let sql = `INSERT INTO Categoryies (CategoryName) VALUES (?)`;//לפי שם העמודות שנמצאים בטבלה 
-    let [result] = await db.query(sql,[name,CategoryName,users_id]); 
+
+async function add({name,userId}){
+    let sql = `INSERT INTO categories (name,user_id) VALUES (?,?)`;
+    let [result] = await db.query(sql,[name,userId]); 
     return result.insertId;
 }
 
+async function getOne(catId,userId){
+    let sql = `SELECT * FROM categories WHERE id = ? AND user_id = ?`;
+    let [result] = await db.query(sql,[catId,userId]);    
+    return result[0];
+}
 
 module.exports ={
     getAll,
-    addCategory  
+    add,
+    getOne
 }
