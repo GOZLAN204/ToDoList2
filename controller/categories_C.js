@@ -2,7 +2,7 @@ const {getAll,add,getOne} = require('../model/categories_M.js');
 
 async function getAllCategories(req,res) {
     try{
-        let categories = await getAll();
+        let categories = await getAll(req.user.id);
         if(categories.length == 0){
             return res.status(400).json({message:"אין נתונים"})
         }
@@ -39,9 +39,21 @@ async function getCategory(req,res) {
         res.status(500).json({message:"Server error"})
     }
 }
+async function deleteCategory(req, res) {
+    try {
+        let id = req.params.id;
+        let result = await remove(id,req.user.id);
+        if (result.affectedRows === 0) return res.status(404).json({ message: "Category not found" });
+        res.status(200).json({ message: "נמחק בהצלחה" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+}
 
 module.exports={
     getAllCategories,
     addCategory,
-    getCategory
+    getCategory,
+    deleteCategory,
 }
