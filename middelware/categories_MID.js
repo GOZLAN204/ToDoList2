@@ -15,8 +15,7 @@ function isValidId(req,res,next){
     next();
 }
 
-
 module.exports = {
-    valuesToAdd,
+    validValues,
     isValidId
 }
