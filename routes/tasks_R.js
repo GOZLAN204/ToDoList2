@@ -1,21 +1,14 @@
-function validValues(req,res,next){
-    let name = req.body.name;
-    if(!name){
-        return res.status(400).json({message:"חסרים נתונים"});
-    }
-    next();
-}
+const express = require('express');
+const router = express.Router();
+const {getAllTasks,addTask,getTask,deleteTask} = require('../controller/tasks_C');
+const {isLoggedIn} = require('../middelware/auth_MID');
+const {validValues,isValidId} = require('../middelware/tasks_MID');
 
-function isValidId(req,res,next){
-    let id = parseInt(req.params.id);
-    if(isNaN(id) || id <= 0){
-        res.status(400).json({message:"ID is not valid"})
-    }
-    req.id = id;
-    next();
-}
 
-module.exports = {
-    validValues,
-    isValidId
-}
+router.get('/',isLoggedIn,getAllTasks);
+router.post('/',isLoggedIn,validValues,addTask);
+router.get('/:id',isLoggedIn,isValidId,getTask);
+router.delete('/:id',isLoggedIn,isValidId,deleteTask);
+
+
+module.exports = router;

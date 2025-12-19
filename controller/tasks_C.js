@@ -1,4 +1,4 @@
-const {getAll} = require('../model/tasks_M.js');
+const {getAll,add,getOne,remove} = require('../model/tasks_M.js');
 
 async function getAllTasks(req,res) {
     try{
@@ -12,40 +12,50 @@ async function getAllTasks(req,res) {
     }
 }
 
-async function getTask(req, res) {
-    try {
-        const taskId = req.params.id;
+async function addTask(req,res) {
+    try{
+        let text = req.body.text;
+        let userId = req.user.id;
 
-        let task = await getOne(taskId, req.user.id);
-        if (!task) {
-            return res.status(404).json({ message: "task not found" });
+        let taskId = await add({text,userId});
+        if(!taskId){
+            return res.status(500).json({message:"Server error"});
         }
-
-        res.status(200).json(task);
-    } catch (err) {
-        res.status(500).json({ message: "Server error" });
-    }
-}
-
-
-async function addTask(req, res) {
-    try {
-        const UserID = req.user.id;
-        const { CategoryID } = req.body;
-
-        let taskId = await add({UserID,CategoryID});
-
-        res.status(201).json({message: "נוסף בהצלחה",taskId});
-    } catch (err) {
+        res.status(201).json({message:"נוסף בהצלחה"});
+    }catch(err){
         console.error(err);
-        res.status(500).json({ message: "Server error" });
+        res.status(500).json({message:"Server error"});
     }
 }
 
+async function getTask(req,res) {
+    try{
+        let task = await getOne(req.id,req.user.id);
+        if(!task){
+            return res.status(400).json({message:`task is not found!`})
+        }
+        res.status(200).json(task);
+    }catch(err){
+        res.status(500).json({message:"Server error"})
+    }
+}
 
-module.exports = {
+async function deleteTask(req,res) {
+    try{
+        let affectedRows = await remove(req.id,req.user.id);
+        if(!affectedRows){
+            return res.status(400).json({message:`task ${req.id} not found!`})
+        }
+        res.status(200).json({message:"deleted!"});
+    }catch(err){
+        console.error(err);
+        res.status(500).json({message:"Server error"})
+    }
+}
+
+module.exports={
     getAllTasks,
-    getTask,
     addTask,
-
+    getTask,
+    deleteTask
 }
