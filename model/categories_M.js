@@ -1,21 +1,39 @@
-function validValues(req,res,next){
-    let name = req.body.name;
-    if(!name){
-        return res.status(400).json({message:"חסרים נתונים"});
-    }
-    next();
+const db = require('../config/db_config');
+
+async function getAll(userId){
+    let sql = `SELECT * FROM categories WHERE user_id = ?`;
+    let [rows] = await db.query(sql,[userId]);    
+    return rows;
 }
 
-function isValidId(req,res,next){
-    let id = parseInt(req.params.id);
-    if(isNaN(id) || id <= 0){
-        res.status(400).json({message:"ID is not valid"})
-    }
-    req.id = id;
-    next();
+async function add({name,userId}){
+    let sql = `INSERT INTO categories (name,user_id) VALUES (?,?)`;
+    let [result] = await db.query(sql,[name,userId]); 
+    return result.insertId;
 }
 
-module.exports = {
-    validValues,
-    isValidId
+async function getOne(catId,userId){
+    let sql = `SELECT * FROM categories WHERE id = ? AND user_id = ?`;
+    let [result] = await db.query(sql,[catId,userId]);    
+    return result[0];
+}
+
+async function remove(catId,userId){
+    let sql = `DELETE FROM categories WHERE id = ? AND user_id = ?`;
+    let [result] = await db.query(sql,[catId,userId]);    
+    return result.affectedRows;
+}
+
+async function update(catId,userId,newName){
+    let sql = `UPDATE categories SET name = ? WHERE id = ? AND user_id = ?`;
+    let [result] = await db.query(sql,[newName,catId,userId]);    
+    return result.affectedRows;
+}
+
+module.exports ={
+    getAll,
+    add,
+    getOne,
+    remove,
+    update
 }
