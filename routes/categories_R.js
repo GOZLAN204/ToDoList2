@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { getAllCategories, addCategory, deleteCategory,getCategory, updateCategory } = require('./controller/Categories_C');
-const {validValues,isValidId} = require('../middelware/Catagories_MID.js');
+const { getAllCategories, addCategory, deleteCategory, getCategory, updateCategory } = require('../controller/categories_C');
+const {validValues, isValidId} = require('../middelware/categories_MID');
 const { isLoggedIn } = require('../middelware/auth_MID');
 
 

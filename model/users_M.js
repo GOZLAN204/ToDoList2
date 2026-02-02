@@ -1,4 +1,4 @@
-const db = require('../config/db-config');
+const db = require('../config/db_config');
 
 async function getAll(){
     let sql = `SELECT id,name,email,userName FROM users`;

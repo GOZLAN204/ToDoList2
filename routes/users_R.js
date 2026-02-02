@@ -6,9 +6,8 @@ const {
     deleteUser,
     updateUser
 } = require('../controller/users_C.js');
-const {isValidID, valuesToEdit} = require('./middelware/Users_MID.js');
-const {isLoggedIn} = require('../middelware/auth_MID.js');
-
+const {isValidID, valuesToEdit} = require('../middelware/users_MID');
+const {isLoggedIn} = require('../middelware/auth_MID');
 
 router.get('/',isLoggedIn,getALLUsers);
 router.get('/:id',isValidID, getOneUser);
