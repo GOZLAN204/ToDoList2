@@ -1,39 +1,38 @@
-const db = require('../config/db_config');
+const db = require('../config/db-config');
 
-async function getAll(userId){
-    let sql = `SELECT * FROM categories WHERE user_id = ?`;
-    let [rows] = await db.query(sql,[userId]);    
+async function getAll(User_Id) {
+    let sql = `SELECT * FROM categories WHERE User_Id= ?`;
+    let [rows] = await db.query(sql,[User_Id]);
     return rows;
 }
 
-async function add({name,userId}){
-    let sql = `INSERT INTO categories (name,user_id) VALUES (?,?)`;
-    let [result] = await db.query(sql,[name,userId]); 
+async function add({ Name, User_Id }) {
+    let sql = `INSERT INTO categories (Name, User_Id) VALUES (?, ?)`;
+    let [result] = await db.query(sql, [Name, User_Id]);
     return result.insertId;
 }
 
-async function getOne(catId,userId){
-    let sql = `SELECT * FROM categories WHERE id = ? AND user_id = ?`;
-    let [result] = await db.query(sql,[catId,userId]);    
+async function remove(catId,User_Id) {
+    let sql = `DELETE FROM categories WHERE id = ? AND User_Id = ?`;
+    let [result] = await db.query(sql, [catId,User_Id]);
+    return result;
+}
+
+async function getOne(catId,User_Id) {
+    let sql =  `SELECT * FROM categories WHERE id = ? AND User_Id= ?`
+    let[result] = await db.query(sql,[catId,User_Id]);
     return result[0];
 }
-
-async function remove(catId,userId){
-    let sql = `DELETE FROM categories WHERE id = ? AND user_id = ?`;
-    let [result] = await db.query(sql,[catId,userId]);    
+async function update(catId,User_Id,newName){
+    let sql = `UPDATE categories SET Name= ? WHERE id = ? AND User_Id = ?`;
+    let [result] = await db.query(sql,[newName,catId,User_Id]);    
     return result.affectedRows;
 }
 
-async function update(catId,userId,newName){
-    let sql = `UPDATE categories SET name = ? WHERE id = ? AND user_id = ?`;
-    let [result] = await db.query(sql,[newName,catId,userId]);    
-    return result.affectedRows;
-}
-
-module.exports ={
+module.exports = {
     getAll,
     add,
-    getOne,
     remove,
+    getOne,
     update
-}
+};

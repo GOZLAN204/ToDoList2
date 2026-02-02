@@ -1,17 +1,18 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const cookies = require('cookie-parser');
 
 function valuesToAdd(req,res,next){
-    let {name,email,userName,pass} = req.body;
-    if(!name || !email || !userName || !pass){
+    let {Name,Email,User_Name,Password} = req.body;
+    if(!Name || !Email || !User_Name || !Password){
         return res.status(400).json({message:"חסרים נתונים"});
     }
     next();
 }
 
 function valuesToLogin(req,res,next){
-    let {userName,pass} = req.body;
-    if(!userName || !pass){
+    let {User_Name,Password} = req.body;
+    if(!User_Name || !Password){
         return res.status(400).json({message:"חסרים נתונים"});
     }
     next();
@@ -19,9 +20,9 @@ function valuesToLogin(req,res,next){
 
 async function encrypPass(req,res,next){
     try{
-        let pass = req.body.pass;    
-        let hashPass = await bcrypt.hash(pass,10);
-        req.pass = hashPass;
+        const { Password } = req.body;   
+        let hashPass = await bcrypt.hash(Password,10);
+        req.body.Password = hashPass;
         next();
     }catch(err){
         console.error(err);
@@ -29,20 +30,33 @@ async function encrypPass(req,res,next){
     }
 }
 
-function isLoggedIn(req,res,next){
-    let token = req.cookies.jwt;    
-    if(!token){
-        return res.status(401).json({message:"נא להתחבר למערכת"});
+function isLoggedIn(req, res, next) {
+    let token = req.cookies.jwt;
+
+    // إذا مافي كوكي، حاول نجيب من الهيدر
+    if (!token && req.headers.authorization) {
+        const parts = req.headers.authorization.split(" ");
+        if (parts.length === 2 && parts[0] === "Bearer") {
+            token = parts[1];
+        }
     }
-    try{
-        let payload = jwt.verify(token,process.env.SECRET_KEY);    
-        req.user = payload;    
+
+    if (!token) {
+        return res.status(401).json({ message: "you have to connect to the server" });
+    }
+
+    try {
+        let payload = jwt.verify(token, process.env.SECRET_KEY);
+        req.user = payload;  // الآن req.user موجود
+        console.log("Token payload:", payload);
         next();
-    }catch(err){
+    } catch (err) {
         console.error(err);
-        res.status(500).json({message:"Server error"});
+        res.status(500).json({ message: "Server error" });
     }
 }
+
+
 
 module.exports = {
     valuesToAdd,
